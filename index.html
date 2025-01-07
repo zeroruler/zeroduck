@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Linktree</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-color: #9faf97; /* 버튼 색상 검정으로 변경 */
+        --hover-color: #333; /* 호버 시 약간 밝은 색상 */
+        --background-color: #f5ece0; /* 배경색 */
+        --text-color: #333; /* 텍스트 기본 색상 */
+      }
+
+      body {
+        font-family: "IBM Plex Sans KR"; /* 구글 폰트 적용 */
+        text-align: center;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        display: flex; /* 화면 전체에서 중앙 정렬 */
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* 전체 화면 높이를 차지 */
+      }
+
+      .container {
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .profile {
+        margin-bottom: 20px;
+      }
+
+      .profile img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .profile h1 {
+        font-size: calc(1.5rem + 1vw); /* 반응형 폰트 크기 */
+        margin: 10px 0;
+      }
+
+      .profile p {
+        font-size: calc(0.85rem + 0.5vw); /* 반응형 폰트 크기 */
+        color: #333;
+        margin: 3px 0;
+      }
+
+      .links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .links li {
+        margin: 10px 0;
+      }
+
+      .links a {
+        display: block;
+        text-decoration: none;
+        background-color: var(--primary-color); /* 검정색 배경 */
+        color: white;
+        padding: calc(10px + 0.5vw) 20px; /* 좌우 패딩 균일하게 */
+        border-radius: 5px; /* 둥근 모서리 */
+        font-size: calc(1rem + 0.3vw); /* 반응형 폰트 크기 */
+        transition: background-color 0.3s, transform 0.4s ease; /* 애니메이션 부드럽게 */
+
+        /* 중앙 정렬 관련 속성 */
+        width: 100%; /* 부모 너비에 맞춤 */
+        max-width: 50rem; /* 최대 너비 제한 */
+        margin: 0 auto; /* 가운데 정렬 */
+        text-align: center; /* 텍스트 중앙 정렬 */
+        box-sizing: border-box; /* 패딩 포함한 박스 모델 */
+      }
+
+      .links a:hover {
+        background-color: var(--hover-color); /* 조금 더 밝은 색상 */
+        transform: scale(1.02); /* 확대 비율 조정 */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile">
+        <img src="https://ifh.cc/g/Kl0Pkn.jpg" alt="Profile Picture" />
+        <h1>영덕대게 부천소사점</h1>
+        <p>가족을 위한 최고의 오리 맛집, 영덕대게</p>
+      </div>
+      <ul class="links">
+        <li><a href="#reservation.html">예약하기</a></li>
+        <li><a href="#review.html">후기 남기기</a></li>
+        <li><a href="directions.html">오시는길</a></li>
+        <li><a href="#contectus.html">문의하기</a></li>
+      </ul>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>후기 남기기</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        font-size: calc(14px + 0.3vw);
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans KR", sans-serif;
+        background-color: #f5ece0;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 50rem;
+        width: 90%;
+        padding: 1.5rem;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1rem;
+        margin: 0.5rem 0 1.5rem;
+      }
+
+      .stars {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .stars span {
+        font-size: calc(1.8rem + 0.5vw);
+        cursor: pointer;
+        color: transparent;
+        -webkit-text-stroke: 1px #333;
+        transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
+      }
+
+      .stars span.active {
+        color: #333;
+        -webkit-text-stroke: 0;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+        font-size: 1rem;
+        height: 6rem;
+        resize: none;
+        box-sizing: border-box;
+        margin-bottom: 1.5rem;
+        background-color: #fff;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #9faf97;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .thank-you {
+        display: none;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-top: 2rem;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="review-container">
+      <h1 id="title">영덕대게 부천소사점</h1>
+      <p id="text">
+        고객님의 소중한 리뷰는 더 나은 서비스를 제공하는데 도움이 됩니다 :)
+      </p>
+
+      <div class="stars" id="stars">
+        <span data-star="1">★</span>
+        <span data-star="2">★</span>
+        <span data-star="3">★</span>
+        <span data-star="4">★</span>
+        <span data-star="5">★</span>
+      </div>
+
+      <textarea
+        id="review"
+        placeholder="리뷰를 작성해주세요."
+        required
+      ></textarea>
+      <button type="button" id="submit-button">리뷰 제출</button>
+
+      <div class="thank-you" id="thank-you-message">
+        응답이 기록되었습니다<br />
+        소중한 의견 감사합니다
+      </div>
+    </div>
+
+    <script>
+      // 별점 기능 구현
+      const stars = document.querySelectorAll("#stars span");
+      let selectedStars = 0;
+
+      stars.forEach((star, index) => {
+        star.addEventListener("click", function () {
+          selectedStars = index + 1;
+          stars.forEach((s, i) => {
+            if (i < selectedStars) {
+              s.classList.add("active");
+            } else {
+              s.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      // 버튼 클릭 이벤트
+      const reviewText = document.getElementById("text");
+      const reviewStars = document.getElementById("stars");
+      const reviewBox = document.getElementById("review");
+      const submitBtn = document.getElementById("submit-button");
+      const thxMessage = document.getElementById("thank-you-message");
+
+      submitBtn.addEventListener("click", function () {
+        reviewText.style.display = "none";
+        reviewStars.style.display = "none";
+        reviewBox.style.display = "none";
+        submitBtn.style.display = "none";
+        thxMessage.style.display = "block";
+      });
+    </script>
+  </body>
+</html>

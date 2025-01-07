@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Location Guide</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background-color: #f5ece0;
+        --text-color: #333;
+      }
+
+      body {
+        font-family: "IBM Plex Sans KR", Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+
+      .container {
+        max-width: 50rem;
+        width: 90%;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        font-size: calc(1.3rem + 0.8vw);
+        margin-bottom: 1.5rem;
+      }
+
+      p {
+        font-size: calc(0.9rem + 0.4vw);
+        line-height: 1.8;
+        margin: 1.2rem 0;
+      }
+
+      .section {
+        margin-bottom: 2.5rem;
+      }
+
+      .section-title {
+        font-size: calc(1rem + 0.4vw);
+        font-weight: bold;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--text-color);
+        padding-bottom: 0.4rem;
+        margin-top: 2.5rem; /* 번호 위로 40px 여백 추가 */
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+        p {
+          font-size: 0.9rem;
+        }
+        .section-title {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>어서오세요! 우리 식당 위치 안내해 드릴게요 :)</h1>
+
+      <div class="section">
+        <div class="section-title">1. 우리 식당은 여기 있어요!</div>
+        <p>📍 부천시 소사구 은성로 110-1/2</p>
+        <p>
+          지도에서 찾아보시면 바로 보이실 거예요! 너무 어렵지 않으니 걱정 마세요!
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">2. 이렇게 찾아오시면 편해요</div>
+        <p>
+          🚉 소새울역 2번 출구로 나오세요. 거기서 23-2, 12-1, 55-1번 버스를 타고
+          '주공, 주흥 S클래스' 정류장에서 내리시면 됩니다. 그리고 횡단보도 3번째
+          칸에서 점프~! (조금 장난스럽지만, 꼭 해보세요 🤭)
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">3. 메뉴 추천 드릴게요!</div>
+        <p>
+          🍴 <strong>베스트 메뉴:</strong> 훈제영덕 (고객님들이 정말
+          좋아하세요!)<br />
+          🍴 <strong>인기 메뉴:</strong> 영덕 로스구이, 영덕백숙 (담백하고
+          맛있어요~)<br />
+          🍴 <strong>추가 메뉴:</strong> 영덕대게, 해물파전 (특별한 날 딱
+          좋아요!)<br />
+          🍴 <strong>서비스:</strong> 모구모구 (운이 좋으면 드실 수 있어요 😋)
+        </p>
+        <p>메뉴 고민될 땐 직원에게 물어보세요. 친절히 추천해 드릴게요!</p>
+      </div>
+    </div>
+  </body>
+</html>

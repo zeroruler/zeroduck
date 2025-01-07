@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>예약하기</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap");
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      :root {
+        font-size: calc(13px + 0.35vw);
+        --primary-color: #9faf97; /* 버튼 색상 검정으로 변경 */
+        --hover-color: #333; /* 호버 시 약간 밝은 색상 */
+        --background-color: #f5ece0; /* 배경색 */
+        --text-color: #333; /* 텍스트 기본 색상 */
+      }
+
+      body {
+        font-family: "IBM Plex Sans KR";
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        user-select: none;
+        margin: 0 auto;
+        padding: 0 0rem;
+        max-width: 50rem;
+        text-align: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        width: 90%;
+        max-width: 50rem;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: calc(14px + 2vw);
+        color: var(--text-color);
+      }
+
+      .calendar {
+        margin: 10px 0;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .calendar-header button {
+        background: none;
+        transition: 0.07s;
+        border-radius: 5px;
+        padding: 7px 10px;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: var(--text-color);
+      }
+
+      .calendar-header button:hover {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .day {
+        transition: 0.07s;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: calc(11px + 0.35vw);
+      }
+
+      .day:hover {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      .disabled {
+        color: #ccc;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+
+      .selected {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      .previously-selected {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      .holiday {
+        background-color: #ffcccc;
+        color: #000;
+      }
+
+      .weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        font-weight: bold;
+        text-align: center;
+        font-weight: lighter;
+      }
+
+      #time {
+        -o-appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+         {
+          ...;
+        }
+        width: 100px;
+        height: 35px;
+        background-size: 20px;
+        padding: 5px 10px 5px 10px;
+        border-radius: 5px;
+        outline: 0 none;
+      }
+
+      #time option {
+        background: var(--primary-color);
+        color: #fff;
+        padding: 3px 0;
+      }
+
+      .time-select {
+        display: none;
+        margin-top: 20px;
+        animation: fadeIn 0.5s;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #000;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        text-align: center;
+        width: 90%;
+        box-sizing: border-box;
+      }
+
+      .modal h2 {
+        font-weight: 200;
+      }
+
+      .modal input {
+        margin: 10px 0;
+        padding: 8px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      #confirm-btn,
+      #submit-reservation,
+      #modify-reservation,
+      #cancel-reservation,
+      #go-back {
+        background-color: var(--text-color);
+        color: #fff;
+        border: 0;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 100px;
+        height: 35px;
+      }
+
+      .reservation-complete {
+        display: none;
+        text-align: center;
+      }
+
+      .reservation-complete h2 {
+        color: var(--text-color);
+      }
+
+      .cancel-complete {
+        display: none;
+        text-align: center;
+      }
+
+      .cancel-complete h2 {
+        color: var(--text-color);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        #confirm-btn,
+        #submit-reservation,
+        #modify-reservation,
+        #cancel-reservation,
+        #go-back,
+        #time {
+          width: 70px;
+          height: 25px;
+          font-size: small;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #confirm-btn,
+        #submit-reservation,
+        #modify-reservation,
+        #cancel-reservation,
+        #go-back,
+        #time {
+          width: 60px;
+          height: 26px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="reservation-page">
+      <h1>예약하기</h1>
+
+      <div class="calendar">
+        <div class="calendar-header">
+          <button id="prev-month">&lt;</button>
+          <span id="current-month">2024년 1월</span>
+          <button id="next-month">&gt;</button>
+        </div>
+        <div class="weekdays">
+          <div>일</div>
+          <div>월</div>
+          <div>화</div>
+          <div>수</div>
+          <div>목</div>
+          <div>금</div>
+          <div>토</div>
+        </div>
+        <div class="days" id="days">
+          <!-- Days will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <div class="time-select" id="time-select">
+        <label for="time">시간을 선택하세요: </label>
+
+        <select id="time">
+          <option disabled selected>-</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+          <option value="18:00">18:00</option>
+          <option value="19:00">19:00</option>
+          <option value="20:00">20:00</option>
+          <option value="21:00">21:00</option>
+        </select>
+
+        <button id="confirm-btn">예약 확인</button>
+      </div>
+    </div>
+
+    <div class="modal" id="reservation-modal">
+      <h2>예약 정보를 입력해주세요.</h2>
+      <input type="text" id="name" placeholder="이름을 입력해주세요" />
+      <input type="text" id="phone" placeholder="전화번호를 입력해주세요" />
+      <button id="submit-reservation">예약 완료</button>
+    </div>
+
+    <div class="reservation-complete" id="reservation-complete">
+      <h2 id="completion-message">예약이 완료되었습니다!</h2>
+      <button id="modify-reservation">예약 변경</button>
+      <button id="cancel-reservation">예약 취소</button>
+    </div>
+
+    <div class="cancel-complete" id="cancel-complete">
+      <h2>예약이 취소되었습니다. 감사합니다 :)</h2>
+      <button id="go-back" onclick="location.href='index.html'">
+        처음으로
+      </button>
+    </div>
+
+    <script>
+      const daysContainer = document.getElementById("days");
+      const currentMonth = document.getElementById("current-month");
+      const timeSelect = document.getElementById("time-select");
+      const confirmBtn = document.getElementById("confirm-btn");
+      const reservationPage = document.getElementById("reservation-page");
+      const reservationComplete = document.getElementById(
+        "reservation-complete"
+      );
+      const completionMessage = document.getElementById("completion-message");
+      const modifyReservationBtn =
+        document.getElementById("modify-reservation");
+      const cancelReservationBtn =
+        document.getElementById("cancel-reservation");
+      const cancelComplete = document.getElementById("cancel-complete");
+      const reservationModal = document.getElementById("reservation-modal");
+      const submitReservationBtn =
+        document.getElementById("submit-reservation");
+
+      let selectedDate = "";
+      let selectedName = "";
+      let selectedTime = localStorage.getItem("selectedTime") || "";
+
+      const today = new Date();
+      let currentYear = today.getFullYear();
+      let currentMonthIndex = today.getMonth();
+
+      function loadCalendar(year, month) {
+        daysContainer.innerHTML = "";
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDay = firstDay.getDay();
+        const currentDate = new Date();
+
+        currentMonth.textContent = `${year}년 ${month + 1}월`;
+
+        for (let i = 0; i < startDay; i++) {
+          const emptyDay = document.createElement("div");
+          daysContainer.appendChild(emptyDay);
+        }
+
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+          const dayElement = document.createElement("div");
+          const dateString = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(i).padStart(2, "0")}`;
+          const dateObject = new Date(dateString);
+
+          dayElement.classList.add("day");
+          dayElement.textContent = i;
+
+          if (dateObject < currentDate) {
+            dayElement.classList.add("disabled");
+          } else {
+            dayElement.addEventListener("click", () => {
+              document
+                .querySelectorAll(".day")
+                .forEach((day) => day.classList.remove("selected"));
+              dayElement.classList.add("selected");
+              selectedDate = dateString;
+              timeSelect.style.display = "block";
+              if (selectedTime) {
+                document.getElementById("time").value = selectedTime;
+              }
+            });
+          }
+
+          daysContainer.appendChild(dayElement);
+        }
+      }
+
+      document.getElementById("prev-month").addEventListener("click", () => {
+        currentMonthIndex--;
+        if (currentMonthIndex < 0) {
+          currentMonthIndex = 11;
+          currentYear--;
+        }
+        loadCalendar(currentYear, currentMonthIndex);
+      });
+
+      document.getElementById("next-month").addEventListener("click", () => {
+        currentMonthIndex++;
+        if (currentMonthIndex > 11) {
+          currentMonthIndex = 0;
+          currentYear++;
+        }
+        loadCalendar(currentYear, currentMonthIndex);
+      });
+
+      confirmBtn.addEventListener("click", () => {
+        const time = document.getElementById("time").value;
+        if (!selectedDate || !time) {
+          alert("날짜와 시간을 선택해주세요.");
+          return;
+        }
+        selectedTime = time;
+        localStorage.setItem("selectedTime", selectedTime);
+        reservationModal.style.display = "block";
+      });
+
+      submitReservationBtn.addEventListener("click", () => {
+        const nameInput = document.getElementById("name").value;
+        const phoneInput = document.getElementById("phone").value;
+
+        if (!nameInput || !phoneInput) {
+          alert("이름과 전화번호를 입력해주세요.");
+          return;
+        }
+
+        selectedName = nameInput;
+        reservationModal.style.display = "none";
+        reservationPage.style.display = "none";
+        reservationComplete.style.display = "block";
+
+        completionMessage.textContent = `${selectedName}님! ${selectedDate}일 ${selectedTime}시에 예약이 완료되었습니다!`;
+      });
+
+      modifyReservationBtn.addEventListener("click", () => {
+        reservationPage.style.display = "block";
+        reservationComplete.style.display = "none";
+        loadCalendar(currentYear, currentMonthIndex);
+        if (selectedTime) {
+          document.getElementById("time").value = selectedTime;
+        }
+      });
+
+      cancelReservationBtn.addEventListener("click", () => {
+        if (confirm("예약을 취소하시겠습니까?")) {
+          reservationComplete.style.display = "none";
+          cancelComplete.style.display = "block";
+          localStorage.removeItem("selectedTime");
+        }
+      });
+
+      loadCalendar(currentYear, currentMonthIndex);
+    </script>
+  </body>
+</html>
