@@ -1,455 +1,744 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="ko">
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>예약하기</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap");
 
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      :root {
-        font-size: calc(13px + 0.35vw);
-        --primary-color: #9faf97; /* 버튼 색상 검정으로 변경 */
-        --hover-color: #333; /* 호버 시 약간 밝은 색상 */
-        --background-color: #f5ece0; /* 배경색 */
-        --text-color: #333; /* 텍스트 기본 색상 */
-      }
-
-      body {
-        font-family: "IBM Plex Sans KR";
-        margin: 0;
-        padding: 0;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        display: flex;
-        justify-content: center;
-        user-select: none;
-        margin: 0 auto;
-        padding: 0 0rem;
-        max-width: 50rem;
-        text-align: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      .container {
-        text-align: center;
-        width: 90%;
-        max-width: 50rem;
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: calc(14px + 2vw);
-        color: var(--text-color);
-      }
-
-      .calendar {
-        margin: 10px 0;
-      }
-
-      .calendar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-
-      .calendar-header button {
-        background: none;
-        transition: 0.07s;
-        border-radius: 5px;
-        padding: 7px 10px;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-        color: var(--text-color);
-      }
-
-      .calendar-header button:hover {
-        background-color: var(--primary-color);
-        color: #fff;
-      }
-
-      .days {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
-      }
-
-      .day {
-        transition: 0.07s;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        text-align: center;
-        font-size: calc(11px + 0.35vw);
-      }
-
-      .day:hover {
-        background-color: var(--primary-color);
-        color: #fff;
-      }
-
-      .disabled {
-        color: #ccc;
-        pointer-events: none;
-        cursor: not-allowed;
-      }
-
-      .selected {
-        background-color: var(--primary-color);
-        color: #fff;
-      }
-
-      .previously-selected {
-        background-color: var(--primary-color);
-        color: #fff;
-      }
-
-      .holiday {
-        background-color: #ffcccc;
-        color: #000;
-      }
-
-      .weekdays {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-        font-weight: bold;
-        text-align: center;
-        font-weight: lighter;
-      }
-
-      #time {
-        -o-appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-         {
-          ...;
+        :root {
+            --primary-color: #7a9c75;
+            /* 기존보다 조금 더 차분하고 세련된 세이지 그린 */
+            --primary-dark: #5a7c55;
+            --bg-color: #f4f7f6;
+            /* 밝고 깨끗한 배경색 */
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
-        width: 100px;
-        height: 35px;
-        background-size: 20px;
-        padding: 5px 10px 5px 10px;
-        border-radius: 5px;
-        outline: 0 none;
-      }
 
-      #time option {
-        background: var(--primary-color);
-        color: #fff;
-        padding: 3px 0;
-      }
-
-      .time-select {
-        display: none;
-        margin-top: 20px;
-        animation: fadeIn 0.5s;
-      }
-
-      .modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #fff;
-        padding: 20px;
-        border: 1px solid #000;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        z-index: 10;
-        text-align: center;
-        width: 90%;
-        box-sizing: border-box;
-      }
-
-      .modal h2 {
-        font-weight: 200;
-      }
-
-      .modal input {
-        margin: 10px 0;
-        padding: 8px;
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-      }
-
-      #confirm-btn,
-      #submit-reservation,
-      #modify-reservation,
-      #cancel-reservation,
-      #go-back {
-        background-color: var(--text-color);
-        color: #fff;
-        border: 0;
-        border-radius: 5px;
-        font-size: 15px;
-        width: 100px;
-        height: 35px;
-      }
-
-      .reservation-complete {
-        display: none;
-        text-align: center;
-      }
-
-      .reservation-complete h2 {
-        color: var(--text-color);
-      }
-
-      .cancel-complete {
-        display: none;
-        text-align: center;
-      }
-
-      .cancel-complete h2 {
-        color: var(--text-color);
-      }
-
-      @media (max-width: 768px) {
         body {
-          padding: 10px;
+            font-family: "IBM Plex Sans KR", sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
-        #confirm-btn,
-        #submit-reservation,
-        #modify-reservation,
-        #cancel-reservation,
-        #go-back,
-        #time {
-          width: 70px;
-          height: 25px;
-          font-size: small;
+        /* --- Main Container (Card Style) --- */
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 900px;
+            /* 넓이 증가 */
+            text-align: center;
         }
-      }
 
-      @media (max-width: 480px) {
-        #confirm-btn,
-        #submit-reservation,
-        #modify-reservation,
-        #cancel-reservation,
-        #go-back,
-        #time {
-          width: 60px;
-          height: 26px;
-          font-size: 10px;
+        h1 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
         }
-      }
+
+        /* --- Layout (Grid for PC) --- */
+        .reservation-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* 좌우 2단 구성 */
+            gap: 40px;
+            text-align: left;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* --- Calendar Styling --- */
+        .calendar {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .calendar-header button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 400;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day {
+            aspect-ratio: 1/1;
+            /* 정사각형 유지 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .day:hover:not(.disabled) {
+            background-color: #ecf3eb;
+            color: var(--primary-dark);
+        }
+
+        .day.selected {
+            background-color: var(--primary-color) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 10px rgba(122, 156, 117, 0.4);
+        }
+
+        .day.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* --- Time Selection (Chips Style) --- */
+        .time-select-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .time-chip {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .time-chip:hover {
+            border-color: var(--primary-color);
+            background-color: #ecf3eb;
+            color: var(--primary-dark);
+        }
+
+        .time-chip.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(122, 156, 117, 0.4);
+        }
+
+        .time-chip:disabled {
+            background-color: #f0f0f0;
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+        }
+
+        /* --- Buttons --- */
+        button.primary-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        button.primary-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(122, 156, 117, 0.3);
+        }
+
+        button.primary-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button.secondary-btn {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            margin: 5px;
+        }
+
+        button.secondary-btn:hover {
+            background-color: #ecf3eb;
+        }
+
+
+        /* --- Modal & Complete Views --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* 모달 배경을 어둡게 처리 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal h2,
+        .reservation-complete h2,
+        .cancel-complete h2 {
+            margin-top: 0;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .modal input {
+            margin: 10px 0;
+            padding: 15px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(122, 156, 117, 0.2);
+        }
+
+        .reservation-complete,
+        .cancel-complete {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* --- Responsive Design --- */
+        @media (hover: hover) {
+
+            .calendar-header button:hover,
+            .day:hover:not(.disabled),
+            .time-chip:hover:not(:disabled) {
+                background-color: #ecf3eb;
+                color: var(--primary-dark);
+                border-color: var(--primary-color);
+            }
+
+            .primary-btn:hover:not(:disabled) {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(122, 156, 117, 0.3);
+            }
+        }
+
+        /* --- 2. 터치 피드백: 모바일/PC 공통 (누르는 순간의 효과) --- */
+        .day:active:not(.disabled),
+        .time-chip:active:not(:disabled),
+        .primary-btn:active:not(:disabled) {
+            transform: scale(0.96);
+            /* 살짝 눌리는 느낌 */
+            background-color: #d8e5d5;
+            transition: 0.1s;
+        }
+
+        /* --- 3. 모바일 화면 짤림 방지 및 터치 하이라이트 제거 --- */
+        button,
+        .day,
+        .time-chip {
+            -webkit-tap-highlight-color: transparent;
+            /* 터치 시 파란 박스 제거 */
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 25px 15px;
+            }
+
+            .reservation-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            /* 달력 크기 자동 조정 */
+            .calendar {
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .days {
+                gap: 2px;
+            }
+
+            .day {
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+
+            .time-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .time-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="container" id="reservation-page">
-      <h1>예약하기</h1>
+        <h1>예약하기</h1>
 
-      <div class="calendar">
-        <div class="calendar-header">
-          <button id="prev-month">&lt;</button>
-          <span id="current-month">2024년 1월</span>
-          <button id="next-month">&gt;</button>
+        <div class="reservation-content">
+            <div class="calendar-section">
+                <span class="section-title">날짜 선택</span>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button id="prev-month">&lt;</button>
+                        <span id="current-month">2024년 1월</span>
+                        <button id="next-month">&gt;</button>
+                    </div>
+                    <div class="weekdays">
+                        <div>일</div>
+                        <div>월</div>
+                        <div>화</div>
+                        <div>수</div>
+                        <div>목</div>
+                        <div>금</div>
+                        <div>토</div>
+                    </div>
+                    <div class="days" id="days">
+                    </div>
+                </div>
+            </div>
+
+            <div class="time-section">
+                <span class="section-title">시간 선택</span>
+                <div class="time-select-container">
+                    <div class="time-grid" id="time-chips">
+                        <button class="time-chip" data-time="10:00">10:00</button>
+                        <button class="time-chip" data-time="11:00">11:00</button>
+                        <button class="time-chip" data-time="12:00">12:00</button>
+                        <button class="time-chip" data-time="13:00">13:00</button>
+                        <button class="time-chip" data-time="14:00">14:00</button>
+                        <button class="time-chip" data-time="15:00">15:00</button>
+                        <button class="time-chip" data-time="16:00">16:00</button>
+                        <button class="time-chip" data-time="17:00">17:00</button>
+                        <button class="time-chip" data-time="18:00">18:00</button>
+                        <button class="time-chip" data-time="19:00">19:00</button>
+                        <button class="time-chip" data-time="20:00">20:00</button>
+                        <button class="time-chip" data-time="21:00">21:00</button>
+                    </div>
+
+                    <button id="confirm-btn" class="primary-btn" disabled>예약 확인</button>
+                </div>
+            </div>
         </div>
-        <div class="weekdays">
-          <div>일</div>
-          <div>월</div>
-          <div>화</div>
-          <div>수</div>
-          <div>목</div>
-          <div>금</div>
-          <div>토</div>
-        </div>
-        <div class="days" id="days">
-          <!-- Days will be dynamically loaded here -->
-        </div>
-      </div>
-
-      <div class="time-select" id="time-select">
-        <label for="time">시간을 선택하세요: </label>
-
-        <select id="time">
-          <option disabled selected>-</option>
-          <option value="10:00">10:00</option>
-          <option value="11:00">11:00</option>
-          <option value="12:00">12:00</option>
-          <option value="13:00">13:00</option>
-          <option value="14:00">14:00</option>
-          <option value="15:00">15:00</option>
-          <option value="16:00">16:00</option>
-          <option value="17:00">17:00</option>
-          <option value="18:00">18:00</option>
-          <option value="19:00">19:00</option>
-          <option value="20:00">20:00</option>
-          <option value="21:00">21:00</option>
-        </select>
-
-        <button id="confirm-btn">예약 확인</button>
-      </div>
     </div>
 
+    <div class="modal-overlay" id="modal-overlay"></div>
+
     <div class="modal" id="reservation-modal">
-      <h2>예약 정보를 입력해주세요.</h2>
-      <input type="text" id="name" placeholder="이름을 입력해주세요" />
-      <input type="text" id="phone" placeholder="전화번호를 입력해주세요" />
-      <button id="submit-reservation">예약 완료</button>
+        <h2>예약 정보 입력</h2>
+        <p style="margin-bottom: 20px; color: #666;">예약자분의 정보를 입력해주세요.</p>
+        <input type="text" id="name" placeholder="이름" />
+        <input type="text" id="phone" placeholder="전화번호 (숫자만 입력해주세요)" />
+        <button id="submit-reservation" class="primary-btn" style="margin-top: 20px;">예약 완료</button>
     </div>
 
     <div class="reservation-complete" id="reservation-complete">
-      <h2 id="completion-message">예약이 완료되었습니다!</h2>
-      <button id="modify-reservation">예약 변경</button>
-      <button id="cancel-reservation">예약 취소</button>
+        <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
+        <h2 id="completion-message">예약이 완료되었습니다!</h2>
+        <p style="color: #666; margin-bottom: 30px;">방문해주셔서 감사합니다.</p>
+        <div class="action-buttons">
+            <button id="modify-reservation" class="secondary-btn">처음으로</button>
+            <button id="cancel-reservation" class="secondary-btn" style="border-color: #e74c3c; color: #e74c3c;">예약
+                취소</button>
+        </div>
     </div>
 
     <div class="cancel-complete" id="cancel-complete">
-      <h2>예약이 취소되었습니다. 감사합니다 :)</h2>
-      <button id="go-back" onclick="location.href='index.html'">
-        처음으로
-      </button>
+        <div style="font-size: 3rem; margin-bottom: 20px;">✅</div>
+        <h2>예약이 취소되었습니다.</h2>
+        <p style="color: #666; margin-bottom: 30px;">다음에 다시 이용해주세요 :)</p>
+        <button id="go-back" class="primary-btn" onclick="location.href='index.html'">
+            처음으로
+        </button>
     </div>
 
     <script>
-      const daysContainer = document.getElementById("days");
-      const currentMonth = document.getElementById("current-month");
-      const timeSelect = document.getElementById("time-select");
-      const confirmBtn = document.getElementById("confirm-btn");
-      const reservationPage = document.getElementById("reservation-page");
-      const reservationComplete = document.getElementById(
-        "reservation-complete"
-      );
-      const completionMessage = document.getElementById("completion-message");
-      const modifyReservationBtn =
-        document.getElementById("modify-reservation");
-      const cancelReservationBtn =
-        document.getElementById("cancel-reservation");
-      const cancelComplete = document.getElementById("cancel-complete");
-      const reservationModal = document.getElementById("reservation-modal");
-      const submitReservationBtn =
-        document.getElementById("submit-reservation");
+        // ============================================================
+        // [중요] 발급받은 구글 앱스 스크립트 URL을 아래에 넣어주세요!
+        // ============================================================
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzCkk2zsUkqnUD_BC0syKIA47VIwjpdYGWUVkFedhoSJA_a7jxDPcFUXd-kZLEt8QRjxg/exec';
+        // ============================================================
 
-      let selectedDate = "";
-      let selectedName = "";
-      let selectedTime = localStorage.getItem("selectedTime") || "";
 
-      const today = new Date();
-      let currentYear = today.getFullYear();
-      let currentMonthIndex = today.getMonth();
+        const daysContainer = document.getElementById("days");
+        const currentMonth = document.getElementById("current-month");
+        // const timeSelect = document.getElementById("time-select"); // 더 이상 사용 안 함
+        const confirmBtn = document.getElementById("confirm-btn");
+        const reservationPage = document.getElementById("reservation-page");
+        const reservationComplete = document.getElementById("reservation-complete");
+        const completionMessage = document.getElementById("completion-message");
+        const modifyReservationBtn = document.getElementById("modify-reservation");
+        const cancelReservationBtn = document.getElementById("cancel-reservation");
+        const cancelComplete = document.getElementById("cancel-complete");
+        const reservationModal = document.getElementById("reservation-modal");
+        const modalOverlay = document.getElementById("modal-overlay");
+        const submitReservationBtn = document.getElementById("submit-reservation");
+        const timeChips = document.querySelectorAll('.time-chip');
 
-      function loadCalendar(year, month) {
-        daysContainer.innerHTML = "";
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const startDay = firstDay.getDay();
-        const currentDate = new Date();
+        let selectedDate = "";
+        let selectedName = "";
+        // let selectedTime = localStorage.getItem("selectedTime") || ""; // 로컬스토리지 일단 제외하고 단순화
+        let selectedTime = "";
 
-        currentMonth.textContent = `${year}년 ${month + 1}월`;
+        const today = new Date();
+        let currentYear = today.getFullYear();
+        let currentMonthIndex = today.getMonth();
 
-        for (let i = 0; i < startDay; i++) {
-          const emptyDay = document.createElement("div");
-          daysContainer.appendChild(emptyDay);
+        // --- 캘린더 로드 함수 (기존 로직 유지) ---
+        function loadCalendar(year, month) {
+            daysContainer.innerHTML = "";
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay();
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0); // 오늘 날짜 비교를 위해 시간 초기화
+
+            currentMonth.textContent = `${year}년 ${month + 1}월`;
+
+            for (let i = 0; i < startDay; i++) {
+                const emptyDay = document.createElement("div");
+                daysContainer.appendChild(emptyDay);
+            }
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const dayElement = document.createElement("div");
+                const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+                const dateObject = new Date(dateString);
+
+                dayElement.classList.add("day");
+                dayElement.textContent = i;
+
+                // 과거 날짜 비활성화
+                if (dateObject < currentDate) {
+                    dayElement.classList.add("disabled");
+                } else {
+                    dayElement.addEventListener("click", () => {
+                        // 날짜 선택 시 스타일 변경
+                        document.querySelectorAll(".day").forEach((day) => day.classList.remove("selected"));
+                        dayElement.classList.add("selected");
+                        selectedDate = dateString;
+
+                        // 날짜를 선택해야 시간 선택과 확인 버튼이 활성화됨
+                        enableTimeSelection();
+                    });
+                }
+                daysContainer.appendChild(dayElement);
+            }
         }
 
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-          const dayElement = document.createElement("div");
-          const dateString = `${year}-${String(month + 1).padStart(
-            2,
-            "0"
-          )}-${String(i).padStart(2, "0")}`;
-          const dateObject = new Date(dateString);
+        // --- 시간 선택 칩 기능 (새로 추가된 부분) ---
+        function enableTimeSelection() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
 
-          dayElement.classList.add("day");
-          dayElement.textContent = i;
+            // 오늘 날짜 문자열 생성 (YYYY-MM-DD)
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
-          if (dateObject < currentDate) {
-            dayElement.classList.add("disabled");
-          } else {
-            dayElement.addEventListener("click", () => {
-              document
-                .querySelectorAll(".day")
-                .forEach((day) => day.classList.remove("selected"));
-              dayElement.classList.add("selected");
-              selectedDate = dateString;
-              timeSelect.style.display = "block";
-              if (selectedTime) {
-                document.getElementById("time").value = selectedTime;
-              }
+            timeChips.forEach(chip => {
+                const chipTime = chip.getAttribute('data-time'); // "10:00" 형식
+                const [chipHour, chipMinute] = chipTime.split(':').map(Number);
+
+                chip.classList.remove('selected');
+
+                // 1. 선택한 날짜가 오늘인 경우
+                if (selectedDate === todayStr) {
+                    // 현재 시간보다 이전이거나 같은 시간대는 비활성화
+                    if (chipHour < currentHour || (chipHour === currentHour && chipMinute <= currentMinute)) {
+                        chip.disabled = true;
+                        chip.style.opacity = "0.3"; // 시각적으로 더 어둡게
+                    } else {
+                        chip.disabled = false;
+                        chip.style.opacity = "1";
+                    }
+                }
+                // 2. 선택한 날짜가 미래인 경우
+                else {
+                    chip.disabled = false;
+                    chip.style.opacity = "1";
+                }
             });
-          }
 
-          daysContainer.appendChild(dayElement);
+            selectedTime = ""; // 시간 초기화
+            confirmBtn.disabled = true; // 확인 버튼 초기화
         }
-      }
 
-      document.getElementById("prev-month").addEventListener("click", () => {
-        currentMonthIndex--;
-        if (currentMonthIndex < 0) {
-          currentMonthIndex = 11;
-          currentYear--;
+        // 시간 칩 클릭 이벤트 리스너
+        timeChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (!selectedDate) {
+                    alert("날짜를 먼저 선택해주세요.");
+                    return;
+                }
+                // 다른 칩 선택 해제
+                timeChips.forEach(c => c.classList.remove('selected'));
+                // 현재 칩 선택
+                chip.classList.add('selected');
+                // 시간 값 저장
+                selectedTime = chip.getAttribute('data-time');
+                // 예약 확인 버튼 활성화
+                confirmBtn.disabled = false;
+            });
+        });
+
+        // 초기화 시 시간 버튼 비활성화
+        timeChips.forEach(chip => chip.disabled = true);
+
+
+        // --- 이벤트 리스너들 ---
+
+        document.getElementById("prev-month").addEventListener("click", () => {
+            currentMonthIndex--;
+            if (currentMonthIndex < 0) {
+                currentMonthIndex = 11;
+                currentYear--;
+            }
+            loadCalendar(currentYear, currentMonthIndex);
+            resetSelection(); // 달이 바뀌면 선택 초기화
+        });
+
+        document.getElementById("next-month").addEventListener("click", () => {
+            currentMonthIndex++;
+            if (currentMonthIndex > 11) {
+                currentMonthIndex = 0;
+                currentYear++;
+            }
+            loadCalendar(currentYear, currentMonthIndex);
+            resetSelection(); // 달이 바뀌면 선택 초기화
+        });
+
+        function resetSelection() {
+            selectedDate = "";
+            selectedTime = "";
+            confirmBtn.disabled = true;
+            timeChips.forEach(chip => {
+                chip.classList.remove('selected');
+                chip.disabled = true;
+            });
         }
+
+
+        confirmBtn.addEventListener("click", () => {
+            if (!selectedDate || !selectedTime) {
+                alert("날짜와 시간을 선택해주세요.");
+                return;
+            }
+            // localStorage.setItem("selectedTime", selectedTime); // 필요시 복구
+            modalOverlay.style.display = "block";
+            reservationModal.style.display = "block";
+        });
+
+        // 모달 바깥 클릭시 닫기
+        modalOverlay.addEventListener("click", () => {
+            modalOverlay.style.display = "none";
+            reservationModal.style.display = "none";
+        });
+
+        // --- 전화번호 자동 하이픈 추가 및 숫자만 입력 허용 ---
+        const phoneInput = document.getElementById("phone");
+
+        phoneInput.addEventListener("input", (e) => {
+            // 숫자만 남기고 나머지 문자 제거
+            let value = e.target.value.replace(/[^0-9]/g, "");
+
+            // 한국 전화번호 양식(010-XXXX-XXXX)에 맞게 하이픈 삽입
+            if (value.length > 3 && value.length <= 7) {
+                value = value.slice(0, 3) + "-" + value.slice(3);
+            } else if (value.length > 7) {
+                value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7, 11);
+            }
+
+            // 변환된 값 다시 입력칸에 넣어줌
+            e.target.value = value;
+        });
+
+        // --- 구글 시트 전송 로직 (기존 기능 유지) ---
+        submitReservationBtn.addEventListener("click", () => {
+            const nameInput = document.getElementById("name").value;
+            const phoneInput = document.getElementById("phone").value;
+
+            if (!nameInput || !phoneInput) {
+                alert("이름과 전화번호를 입력해주세요.");
+                return;
+            }
+
+            submitReservationBtn.innerText = "예약 확인 중...";
+            submitReservationBtn.disabled = true;
+
+            // --- 날짜 형식 변환 로직 (YYYY-MM-DD -> MM월 DD일) ---
+            const dateParts = selectedDate.split('-'); // ["2024", "05", "20"]
+            const month = dateParts[1];
+            const day = dateParts[2];
+            const formattedDisplayDate = `${month}월 ${day}일`;
+            // --------------------------------------------------
+
+            const formData = new FormData();
+            formData.append('name', nameInput);
+            formData.append('phone', phoneInput);
+            formData.append('date', selectedDate); // 시트에는 정렬을 위해 기존 형식(YYYY-MM-DD)으로 전송
+            formData.append('time', selectedTime);
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    selectedName = nameInput;
+                    modalOverlay.style.display = "none";
+                    reservationModal.style.display = "none";
+                    reservationPage.style.display = "none";
+                    reservationComplete.style.display = "block";
+
+                    // 요청하신 형식으로 메시지 출력
+                    completionMessage.innerHTML = `${selectedName}님! ${formattedDisplayDate} ${selectedTime}에<br>예약이 완료되었습니다.`;
+
+                    submitReservationBtn.innerText = "예약 완료";
+                    submitReservationBtn.disabled = false;
+                })
+                .catch(error => {
+                    alert('예약 전송 중 오류가 발생했습니다.');
+                    submitReservationBtn.innerText = "예약 완료";
+                    submitReservationBtn.disabled = false;
+                });
+        });
+
+        modifyReservationBtn.addEventListener("click", () => {
+            reservationPage.style.display = "block";
+            reservationComplete.style.display = "none";
+            loadCalendar(currentYear, currentMonthIndex);
+            resetSelection();
+            // 입력 필드 초기화
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+        });
+
+        cancelReservationBtn.addEventListener("click", () => {
+            if (confirm("정말로 예약을 취소하시겠습니까?")) {
+                reservationComplete.style.display = "none";
+                cancelComplete.style.display = "block";
+                // localStorage.removeItem("selectedTime");
+                resetSelection();
+            }
+        });
+
+        // 초기 로드
         loadCalendar(currentYear, currentMonthIndex);
-      });
-
-      document.getElementById("next-month").addEventListener("click", () => {
-        currentMonthIndex++;
-        if (currentMonthIndex > 11) {
-          currentMonthIndex = 0;
-          currentYear++;
-        }
-        loadCalendar(currentYear, currentMonthIndex);
-      });
-
-      confirmBtn.addEventListener("click", () => {
-        const time = document.getElementById("time").value;
-        if (!selectedDate || !time) {
-          alert("날짜와 시간을 선택해주세요.");
-          return;
-        }
-        selectedTime = time;
-        localStorage.setItem("selectedTime", selectedTime);
-        reservationModal.style.display = "block";
-      });
-
-      submitReservationBtn.addEventListener("click", () => {
-        const nameInput = document.getElementById("name").value;
-        const phoneInput = document.getElementById("phone").value;
-
-        if (!nameInput || !phoneInput) {
-          alert("이름과 전화번호를 입력해주세요.");
-          return;
-        }
-
-        selectedName = nameInput;
-        reservationModal.style.display = "none";
-        reservationPage.style.display = "none";
-        reservationComplete.style.display = "block";
-
-        completionMessage.textContent = `${selectedName}님! ${selectedDate}일 ${selectedTime}시에 예약이 완료되었습니다!`;
-      });
-
-      modifyReservationBtn.addEventListener("click", () => {
-        reservationPage.style.display = "block";
-        reservationComplete.style.display = "none";
-        loadCalendar(currentYear, currentMonthIndex);
-        if (selectedTime) {
-          document.getElementById("time").value = selectedTime;
-        }
-      });
-
-      cancelReservationBtn.addEventListener("click", () => {
-        if (confirm("예약을 취소하시겠습니까?")) {
-          reservationComplete.style.display = "none";
-          cancelComplete.style.display = "block";
-          localStorage.removeItem("selectedTime");
-        }
-      });
-
-      loadCalendar(currentYear, currentMonthIndex);
     </script>
-  </body>
+</body>
+
 </html>
