@@ -9,158 +9,125 @@
       rel="stylesheet"
     />
     <style>
-      :root {
-        font-size: calc(14px + 0.3vw);
-      }
-
+      :root { font-size: calc(14px + 0.3vw); }
       body {
-        margin: 0;
-        font-family: "IBM Plex Sans KR", sans-serif;
-        background-color: #f5ece0;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+        margin: 0; font-family: "IBM Plex Sans KR", sans-serif;
+        background-color: #f5ece0; color: #333;
+        display: flex; justify-content: center; align-items: center; min-height: 100vh;
       }
-
-      .container {
-        max-width: 50rem;
-        width: 90%;
-        padding: 1.5rem;
-        box-sizing: border-box;
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      p {
-        font-size: 1rem;
-        margin: 0.5rem 0 1.5rem;
-      }
-
-      .stars {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 1.5rem;
-      }
-
+      .container { max-width: 50rem; width: 90%; padding: 1.5rem; box-sizing: border-box; text-align: center; }
+      h1 { font-size: 2rem; margin-bottom: 1rem; }
+      p { font-size: 1rem; margin: 0.5rem 0 1.5rem; }
+      
+      /* 별점 디자인 */
+      .stars { display: flex; justify-content: center; margin-bottom: 1.5rem; }
       .stars span {
-        font-size: calc(1.8rem + 0.5vw);
-        cursor: pointer;
-        color: transparent;
-        -webkit-text-stroke: 1px #333;
-        transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
+        font-size: calc(1.8rem + 0.5vw); cursor: pointer; color: transparent;
+        -webkit-text-stroke: 1px #333; transition: color 0.3s ease;
       }
-
-      .stars span.active {
-        color: #333;
-        -webkit-text-stroke: 0;
-      }
-
+      .stars span.active { color: #333; -webkit-text-stroke: 0; }
+      
+      /* 입력창 디자인 */
       textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #333;
-        border-radius: 8px;
-        font-size: 1rem;
-        height: 6rem;
-        resize: none;
-        box-sizing: border-box;
-        margin-bottom: 1.5rem;
-        background-color: #fff;
-        outline: none;
+        width: 100%; padding: 0.75rem; border: 1px solid #333; border-radius: 8px;
+        font-size: 1rem; height: 6rem; resize: none; box-sizing: border-box;
+        margin-bottom: 1.5rem; background-color: #fff; outline: none;
       }
 
+      /* 버튼 공통 디자인 (제출 & 처음으로 버튼 동일) */
       button {
-        width: 100%;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 4px;
-        background-color: #9faf97;
-        color: #fff;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+        width: 100%; padding: 0.75rem; border: none; border-radius: 4px;
+        background-color: #9faf97; color: #fff; font-size: 1rem; font-weight: 700;
+        cursor: pointer; transition: background-color 0.3s ease;
       }
-
-      button:hover {
-        background-color: #333;
-        color: #fff;
-      }
-
-      .thank-you {
-        display: none;
-        font-size: 1rem;
-        font-weight: 500;
-        margin-top: 2rem;
-        color: #333;
-      }
+      button:hover { background-color: #333; }
+      button:disabled { background-color: #ccc; cursor: not-allowed; }
+      
+      /* 완료 화면 디자인 */
+      .thank-you { display: none; margin-top: 2rem; }
+      .thank-you p { font-weight: 500; line-height: 1.6; margin-bottom: 2rem; }
+      
+      /* 완료 화면 내 '처음으로' 버튼에만 상단 여백 추가 */
+      #reset-button { margin-top: 10px; }
     </style>
   </head>
   <body>
-    <div class="container" id="review-container">
+    <div class="container">
       <h1 id="title">영덕대게 부천소사점</h1>
-      <p id="text">
-        고객님의 소중한 리뷰는 더 나은 서비스를 제공하는데 도움이 됩니다 :)
-      </p>
-
-      <div class="stars" id="stars">
-        <span data-star="1">★</span>
-        <span data-star="2">★</span>
-        <span data-star="3">★</span>
-        <span data-star="4">★</span>
-        <span data-star="5">★</span>
+      
+      <div id="input-section">
+        <p id="text">고객님의 소중한 리뷰는 더 나은 서비스를 제공하는데 도움이 됩니다 :)</p>
+        <div class="stars" id="stars">
+          <span data-star="1">★</span><span data-star="2">★</span><span data-star="3">★</span><span data-star="4">★</span><span data-star="5">★</span>
+        </div>
+        <textarea id="review" placeholder="리뷰를 작성해주세요."></textarea>
+        <button type="button" id="submit-button">리뷰 제출</button>
       </div>
 
-      <textarea
-        id="review"
-        placeholder="리뷰를 작성해주세요."
-        required
-      ></textarea>
-      <button type="button" id="submit-button">리뷰 제출</button>
-
       <div class="thank-you" id="thank-you-message">
-        응답이 기록되었습니다<br />
-        소중한 의견 감사합니다
+        <p>응답이 기록되었습니다.<br />소중한 의견 감사합니다.</p>
+        <button type="button" id="reset-button">처음으로</button>
       </div>
     </div>
 
     <script>
-      // 별점 기능 구현
+      // [중요] 새로 배포한 구글 웹 앱 URL을 여기에 넣으세요!
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzSh-vwVrcuA-OrXSpbIZ2N799RYAJGJUn3wwFxmSPQK68zsfebkRIDvaH9MmsSdV7h/exec';
+
+      const inputSection = document.getElementById("input-section");
+      const thxMessage = document.getElementById("thank-you-message");
       const stars = document.querySelectorAll("#stars span");
+      const reviewBox = document.getElementById("review");
+      const submitBtn = document.getElementById("submit-button");
+      const resetBtn = document.getElementById("reset-button");
+      
       let selectedStars = 0;
 
+      // 1. 별점 클릭 이벤트
       stars.forEach((star, index) => {
-        star.addEventListener("click", function () {
+        star.addEventListener("click", () => {
           selectedStars = index + 1;
           stars.forEach((s, i) => {
-            if (i < selectedStars) {
-              s.classList.add("active");
-            } else {
-              s.classList.remove("active");
-            }
+            s.classList.toggle("active", i < selectedStars);
           });
         });
       });
 
-      // 버튼 클릭 이벤트
-      const reviewText = document.getElementById("text");
-      const reviewStars = document.getElementById("stars");
-      const reviewBox = document.getElementById("review");
-      const submitBtn = document.getElementById("submit-button");
-      const thxMessage = document.getElementById("thank-you-message");
-
+      // 2. 리뷰 제출 이벤트
       submitBtn.addEventListener("click", function () {
-        reviewText.style.display = "none";
-        reviewStars.style.display = "none";
-        reviewBox.style.display = "none";
-        submitBtn.style.display = "none";
-        thxMessage.style.display = "block";
+        const reviewContent = reviewBox.value.trim();
+        if (selectedStars === 0) { alert("별점을 선택해주세요!"); return; }
+        if (!reviewContent) { alert("리뷰 내용을 입력해주세요!"); return; }
+
+        submitBtn.innerText = "제출 중...";
+        submitBtn.disabled = true;
+
+        const formData = new FormData();
+        formData.append('stars', selectedStars);
+        formData.append('review', reviewContent);
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+          .then(response => {
+            inputSection.style.display = "none";
+            thxMessage.style.display = "block";
+          })
+          .catch(error => {
+            alert("제출 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            submitBtn.innerText = "리뷰 제출";
+            submitBtn.disabled = false;
+          });
+      });
+
+      // 3. 처음으로 버튼 이벤트 (초기화)
+      resetBtn.addEventListener("click", () => {
+        selectedStars = 0;
+        stars.forEach(s => s.classList.remove("active"));
+        reviewBox.value = "";
+        submitBtn.innerText = "리뷰 제출";
+        submitBtn.disabled = false;
+        
+        thxMessage.style.display = "none";
+        inputSection.style.display = "block";
       });
     </script>
   </body>
