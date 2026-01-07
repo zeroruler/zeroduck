@@ -9,134 +9,114 @@
       rel="stylesheet"
     />
     <style>
-      :root {
-        font-size: calc(14px + 0.3vw);
-      }
-
+      :root { font-size: calc(14px + 0.3vw); }
       body {
-        margin: 0;
-        font-family: "IBM Plex Sans KR", sans-serif;
-        background-color: #f5ece0;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+        margin: 0; font-family: "IBM Plex Sans KR", sans-serif;
+        background-color: #f5ece0; color: #333;
+        display: flex; justify-content: center; align-items: center; min-height: 100vh;
       }
-
-      .container {
-        max-width: 50rem;
-        width: 90%;
-        padding: 1.5rem;
-        box-sizing: border-box;
-        text-align: center;
+      .container { max-width: 50rem; width: 90%; padding: 1.5rem; box-sizing: border-box; text-align: center; }
+      h1 { font-size: 2rem; margin-bottom: 1rem; }
+      p { font-size: 1rem; margin: 0.5rem 0; }
+      
+      form { margin-top: 1.5rem; }
+      .form-group { margin-bottom: 1rem; text-align: left; }
+      label { display: block; margin-bottom: 0.5rem; font-weight: 700; }
+      
+      input, textarea {
+        width: 100%; padding: 0.75rem; border: 1px solid #333; border-radius: 4px;
+        font-size: 1rem; box-sizing: border-box; outline: none;
       }
+      textarea { resize: none; height: 8rem; }
 
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      p {
-        font-size: 1rem;
-        margin: 0.5rem 0;
-      }
-
-      form {
-        margin-top: 1.5rem;
-      }
-
-      .form-group {
-        margin-bottom: 1rem;
-        text-align: left;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-      }
-
-      input,
-      textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #333;
-        border-radius: 4px;
-        font-size: 1rem;
-        box-sizing: border-box;
-      }
-
-      textarea {
-        resize: vertical;
-        height: 6rem;
-      }
-
+      /* 버튼 디자인 통일 */
       button {
-        width: 100%;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 4px;
-        background-color: #9faf97;
-        color: #fff;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+        width: 100%; padding: 0.75rem; border: none; border-radius: 4px;
+        background-color: #9faf97; color: #fff; font-size: 1rem; font-weight: 700;
+        cursor: pointer; transition: background-color 0.3s ease; margin-top: 10px;
       }
+      button:hover { background-color: #333; }
+      button:disabled { background-color: #ccc; cursor: not-allowed; }
 
-      button:hover {
-        background-color: #333;
-        color: #fff;
-      }
-
-      .success-message {
-        display: none;
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-top: 2rem;
-        color: #333;
-      }
+      .success-message { display: none; margin-top: 2rem; }
+      .success-message p { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>영덕대게 문의하기</h1>
-      <p id="contect-01">이메일: zeroduck@example.com</p>
-      <p id="contect-02">전화번호: 031) 9451-7455</p>
-      <p id="contect-03">가맹점 문의는 DM부탁드려요🙏🏻</p>
+      <div id="contact-section">
+        <h1>영덕대게 문의하기</h1>
+        <p id="contect-01">이메일: zeroduck@example.com</p>
+        <p id="contect-02">전화번호: 031) 9451-7455</p>
+        <p id="contect-03">가맹점 문의는 DM부탁드려요🙏🏻</p>
 
-      <form id="contact-form">
-        <div class="form-group">
-          <label for="subject">제목</label>
-          <input type="text" id="subject" name="subject" required />
-        </div>
-        <div class="form-group">
-          <label for="message">문의내용</label>
-          <textarea id="message" name="message" required></textarea>
-        </div>
-        <button type="button" id="submit-button">문의하기</button>
-      </form>
+        <form id="contact-form">
+          <div class="form-group">
+            <label for="subject">제목</label>
+            <input type="text" id="subject" name="subject" required />
+          </div>
+          <div class="form-group">
+            <label for="message">문의내용</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button type="button" id="submit-button">문의하기</button>
+        </form>
+      </div>
 
       <div class="success-message" id="success-message">
-        문의가 접수되었습니다. 감사합니다 :)
+        <p>문의가 접수되었습니다.<br>감사합니다 :)</p>
+        <button type="button" id="reset-button">처음으로</button>
       </div>
     </div>
 
     <script>
-      document.getElementById("submit-button");
-      document.getElementById("contect-01");
-      document.getElementById("contect-02");
-      document.getElementById("contect-03");
-      document
-        .getElementById("submit-button")
-        .addEventListener("click", function () {
-          document.getElementById("contact-form").style.display = "none";
-          document.getElementById("contect-01").style.display = "none";
-          document.getElementById("contect-02").style.display = "none";
-          document.getElementById("contect-03").style.display = "none";
-          document.getElementById("success-message").style.display = "block";
-        });
+      // [중요] 새로 배포한 구글 앱스 스크립트 URL을 여기에 넣으세요!
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbyg95kf53jOPobJ6PB_AKdVXVnmXG9frUs2YKzM27Iq61KZlvApLEtOBFOtVwva7hat/exec';
+
+      const contactSection = document.getElementById("contact-section");
+      const successMessage = document.getElementById("success-message");
+      const submitBtn = document.getElementById("submit-button");
+      const resetBtn = document.getElementById("reset-button");
+      const contactForm = document.getElementById("contact-form");
+
+      // 문의 제출 이벤트
+      submitBtn.addEventListener("click", function () {
+        const subject = document.getElementById("subject").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        if (!subject || !message) {
+          alert("제목과 내용을 모두 입력해주세요.");
+          return;
+        }
+
+        submitBtn.innerText = "전송 중...";
+        submitBtn.disabled = true;
+
+        const formData = new FormData();
+        formData.append('subject', subject);
+        formData.append('message', message);
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+          .then(response => {
+            contactSection.style.display = "none";
+            successMessage.style.display = "block";
+          })
+          .catch(error => {
+            alert("전송 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            submitBtn.innerText = "문의하기";
+            submitBtn.disabled = false;
+          });
+      });
+
+      // 처음으로 버튼 이벤트 (초기화)
+      resetBtn.addEventListener("click", () => {
+        contactForm.reset(); // 입력 폼 비우기
+        submitBtn.innerText = "문의하기";
+        submitBtn.disabled = false;
+        
+        successMessage.style.display = "none";
+        contactSection.style.display = "block";
+      });
     </script>
   </body>
 </html>
