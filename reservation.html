@@ -387,6 +387,7 @@
       }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
@@ -678,51 +679,54 @@
 
     // --- 구글 시트 전송 로직 (기존 기능 유지) ---
     // --- 구글 시트 전송 로직 ---
-submitReservationBtn.addEventListener("click", () => {
-    const nameInput = document.getElementById("name").value.trim(); // 이름도 공백 제거
-    const phoneInput = document.getElementById("phone").value.trim(); // 번호도 공백 제거
-    const requestInput = document.getElementById("request").value.trim(); // 요청사항 공백/엔터 제거!
+    submitReservationBtn.addEventListener("click", () => {
+      const nameInput = document.getElementById("name").value.trim(); // 이름도 공백 제거
+      const phoneInput = document.getElementById("phone").value.trim(); // 번호도 공백 제거
+      const requestInput = document.getElementById("request").value.trim(); // 요청사항 공백/엔터 제거!
 
-    if (!nameInput || !phoneInput) {
+      if (!nameInput || !phoneInput) {
         alert("이름과 전화번호를 입력해주세요.");
         return;
-    }
+      }
 
-    submitReservationBtn.innerText = "예약 확인 중...";
-    submitReservationBtn.disabled = true;
+      submitReservationBtn.innerText = "예약 확인 중...";
+      submitReservationBtn.disabled = true;
 
-    // 날짜 형식 변환 (MM월 DD일)
-    const dateParts = selectedDate.split('-');
-    const formattedDisplayDate = `${dateParts[1]}월 ${dateParts[2]}일`;
+      // 날짜 형식 변환 (MM월 DD일)
+      const dateParts = selectedDate.split('-');
+      const formattedDisplayDate = `${dateParts[1]}월 ${dateParts[2]}일`;
 
-    const formData = new FormData();
-    formData.append('name', nameInput);
-    formData.append('phone', phoneInput);
-    formData.append('date', selectedDate);
-    formData.append('time', selectedTime);
-    
-    // 핵심: trim() 후에도 비어있다면(스페이스만 쳤을 경우) "없음"으로 처리
-    formData.append('request', requestInput || "없음");
+      const formData = new FormData();
+      formData.append('name', nameInput);
+      formData.append('phone', phoneInput);
+      formData.append('date', selectedDate);
+      formData.append('time', selectedTime);
 
-    fetch(scriptURL, { method: 'POST', body: formData })
+      // 핵심: trim() 후에도 비어있다면(스페이스만 쳤을 경우) "없음"으로 처리
+      formData.append('request', requestInput || "없음");
+
+      fetch(scriptURL, { method: 'POST', body: formData })
         .then(response => {
-            selectedName = nameInput;
-            modalOverlay.style.display = "none";
-            reservationModal.style.display = "none";
-            reservationPage.style.display = "none";
-            reservationComplete.style.display = "block";
+          selectedName = nameInput;
+          modalOverlay.style.display = "none";
+          reservationModal.style.display = "none";
+          reservationPage.style.display = "none";
+          reservationComplete.style.display = "block";
 
-            completionMessage.innerHTML = `${selectedName}님! ${formattedDisplayDate} ${selectedTime}에<br>예약이 완료되었습니다.`;
+          // ✨ 여기서 폭죽 펑! 실행
+          fireConfetti();
 
-            submitReservationBtn.innerText = "예약 완료";
-            submitReservationBtn.disabled = false;
+          completionMessage.innerHTML = `${selectedName}님! ${formattedDisplayDate} ${selectedTime}에<br>예약이 완료되었습니다.`;
+
+          submitReservationBtn.innerText = "예약 완료";
+          submitReservationBtn.disabled = false;
         })
         .catch(error => {
-            alert('예약 전송 중 오류가 발생했습니다.');
-            submitReservationBtn.innerText = "예약 완료";
-            submitReservationBtn.disabled = false;
+          alert('예약 전송 중 오류가 발생했습니다.');
+          submitReservationBtn.innerText = "예약 완료";
+          submitReservationBtn.disabled = false;
         });
-});
+    });
 
     modifyReservationBtn.addEventListener("click", () => {
       reservationPage.style.display = "block";
@@ -768,6 +772,24 @@ submitReservationBtn.addEventListener("click", () => {
       timeChips.forEach(chip => {
         chip.classList.remove('selected');
         chip.disabled = true;
+      });
+    }
+
+    function fireConfetti() {
+      // 왼쪽에서 쏘기
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { x: 0, y: 0.8 }, // 왼쪽 아래
+        angle: 60
+      });
+
+      // 오른쪽에서 쏘기
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { x: 1, y: 0.8 }, // 오른쪽 아래
+        angle: 120
       });
     }
   </script>
